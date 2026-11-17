@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login complete: Mr. Mind</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header><div class="wrap"><a class="brand" href="./">Mr. Mind</a><nav><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></nav></div></header>
+  <main class="wrap">
+    <h1 id="title">Finishing login…</h1>
+    <p class="lead" id="msg">Sending you back to the video creator app on your computer.</p>
+    <div class="card" id="manual" hidden>
+      <p style="margin-top:0">If nothing happens, make sure the login command is still running on your computer, then <a id="retry" href="#">click here</a>.</p>
+    </div>
+  </main>
+  <footer><div class="wrap"><a href="./">Home</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div></footer>
+  <script>
+    // TikTok only allows https redirect pages, so this page passes the login result
+    // to the owner's local login command (http://127.0.0.1:53683), which finishes the sign-in.
+    (function () {
+      var q = window.location.search;
+      var p = new URLSearchParams(q);
+      if (!p.get("code") && !p.get("error")) {
+        document.getElementById("title").textContent = "Nothing to do here";
+        document.getElementById("msg").textContent = "This page is only used during the owner's TikTok login.";
+        return;
+      }
+      if (p.get("error")) {
+        document.getElementById("title").textContent = "Login was not completed";
+        document.getElementById("msg").textContent = "TikTok said: " + (p.get("error_description") || p.get("error"));
+      }
+      var local = "http://127.0.0.1:53683/callback" + q;
+      document.getElementById("retry").href = local;
+      document.getElementById("manual").hidden = false;
+      window.location.replace(local);
+    })();
+  </script>
+</body>
+</html>
